@@ -1,0 +1,51 @@
+module dtp-fo-csp2100-role { 
+
+  namespace "http://www.cisco.com/dtp-fo-csp2100-role";
+  prefix csp-role;
+
+  import dtp-network { prefix dtpn; }
+  import ietf-inet-types { prefix inet; }
+  import tailf-common { prefix tailf; }
+  import tailf-ncs { prefix ncs; }
+
+  description
+    "This is an add on model to the dtp-network package/service";
+
+  revision 2017-11-28 {
+    description
+      "Initial revision.";
+  }
+
+  grouping csp2100-role-fo {
+    list csp2100-role {
+      key name;
+      uses dtpn:function-object;
+    }
+  }
+
+  grouping csp2100-role-object {
+    leaf-list roles {
+      type enumeration {
+        enum "SAE-Compute";
+      }
+    }
+  }
+
+  augment /dtpn:dtp/dtpn:network/dtpn:topology/dtpn:node/dtpn:function-objects {
+    list csp2100-role {
+      max-elements 1;
+      key "function-object-name";
+      leaf function-object-name {
+        type leafref {
+          path "/dtpn:dtp/dtpn:function-object-definitions/dtpn:node/csp2100-role/name";
+        }
+      }
+      uses csp2100-role-object;
+    }
+  }
+
+  augment /dtpn:dtp/dtpn:function-object-definitions/dtpn:node {
+    uses csp2100-role-fo;
+  }
+
+}
